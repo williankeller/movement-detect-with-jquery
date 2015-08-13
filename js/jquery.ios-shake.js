@@ -29,78 +29,63 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 (function($) {
-    jQuery.shake = function(options) {
-        // Merge passed options with defaults
-        var opts = jQuery.extend({},
-        jQuery.shake.defaults, options);
+    
+	jQuery.shake = function(options) {
 
-        // insert debug content
-        if (opts.debug !== "") {
-            var debug = $(opts.debug);
-            debug.append('x: <span id="x">0</span><br>');
-            debug.append('y: <span id="y">0</span><br>');
-            debug.append('z: <span id="z">0</span><br><br>');
+		var opts = jQuery.extend({},
+        
+			jQuery.shake.defaults, options
+		);
 
-            debug.append('shake: <span id="shake">0</span><br>');
-            debug.append('shakeaccum: <span id="shakeaccum"></span><br>');
-            debug.append('debug: <span id="console"></span><br>');
-        }
+        // Variáveis do acelerômetro
+        var ax = 0, ay = 0, az = 0, axa = 0, aya = 0, aza = 0;
 
-        // initialize acceleration variables
-        var ax = 0;
-        var ay = 0;
-        var az = 0;
-        var axa = 0;
-        var aya = 0;
-        var aza = 0;
-
-        // initialize misc internal variables
-        var shakecount = 0;
-        var shakeaccum = 0;
-        var curtime = new Date();
-        var prevtime = new Date();
-        var timeout = false;
+        // Variáveis internas
+        var acc, shakecount = 0, shakeaccum = 0, curtime = new Date(), prevtime = new Date(), timeout = false;
 
         // http://www.mobilexweb.com/samples/ball.html
-        // detect whether acceleration is supported
+        // Detectando se a aceleração é suportada
         if (window.DeviceMotionEvent === undefined) {
-            if (opts.supported !== "") {
-                $(opts.supported).html("Your browser does not support Device Orientation and Motion API. Try it on an iPhone, iPod or iPad with iOS 4.2+.");
-            }
-        } else {
-            window.ondevicemotion = function(event) {
-                // get acceleration values
-                var acc = event.accelerationIncludingGravity;
+			
+			window.ondevicemotion = function(event) {
+                
+				// Recupera os valores do acelerômetro
+                acc = event.accelerationIncludingGravity;
                 ax = acc.x;
                 ay = acc.y;
                 az = acc.y;
 
-                // high pass-filter to remove gravity
-                // TODO detect and use gyro (no gravity) on supported devices
+                // Filtro para remover a gravidade
                 // http://iphonedevelopertips.com/user-interface/accelerometer-101.html
                 axa = ax - ((ax * opts.hf) + (axa * (1.0 - opts.hf)));
                 aya = ay - ((ay * opts.hf) + (aya * (1.0 - opts.hf)));
                 aza = az - ((az * opts.hf) + (aza * (1.0 - opts.hf)));
 
-                // detect single shake
+                // Detecta um movimento
                 // http://discussions.apple.com/thread.jspa?messageID=8224655
-                var beenhere = false;
-                var shake = false;
-                if (beenhere) {
+                var beenhere = false, shake = false;
+                
+				if (beenhere) {
+					
                     return;
                 }
+				
                 beenhere = true;
-                if (Math.abs(ax - 2 * axa) > opts.violence * 1.5 || Math.abs(ay - 2 * aya) > opts.violence * 2 || Math.abs(az - 2 * aza) > opts.violence * 3 && timeout === false) {
-                    shakeaccum += 1;
+                
+				if (Math.abs(ax - 2 * axa) > opts.violence * 1.5 || Math.abs(ay - 2 * aya) > opts.violence * 2 || Math.abs(az - 2 * aza) > opts.violence * 3 && timeout === false) {
+                    
+					shakeaccum += 1;
                 }
 
-                // detect shake event (several shakes)
+                // Detecta um evento de movimento (Vários movimentos)
                 curtime = new Date();
+				
                 var timedelta = curtime.getTime() - prevtime.getTime();
-                $('#console').html(timedelta);
+                
 
                 if (timeout) {
                     if (timedelta >= opts.debounce) {
+						
                         timeout = false;
                     } else {
                         timeout = true;
@@ -109,49 +94,41 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 }
 
                 if (shakeaccum >= opts.shakethreshold && timeout === false) {
-                    shakecount += 1;
-                    $("#shake").html(shakecount);
+                    
+					shakecount += 1;
+					
+                    console.log(shakecount);
+					
                     prevtime = curtime;
                     timeout = true;
-                    opts.callback.call();
+                    
+					opts.callback.call();
                 }
                 beenhere = true;
             };
-        }
-        if (opts.debug !== "") {
-            setInterval(function() {
-                // output debug data
-                $('#x').html(Math.abs(ax - 2 * axa).toFixed(1));
-                $('#y').html(Math.abs(ay - 2 * aya).toFixed(1));
-                $('#z').html(Math.abs(az - 2 * aza).toFixed(1));
-                $('#shakeaccum').html(shakeaccum);
-            },
-            10);
-        }
+			
+        } else {
+			
+            console.log("Seu dispositivo não tem um acelerômetro.");
+        }       
     };
 })(jQuery);
 
-// plugin default options
+// Opções padrão
 jQuery.shake.defaults = {
-    // debug div id
-    debug: '1',
-    
-    // not supported message div
-    supported: "",
 
-    // single shake sensitivity
+    // Força do movimento
     violence: 3.0,
 
-    // high-pass filter constant
+    // Constante do filtro
     hf: 0.2,
 
-    // number of single shakes required to fire a shake event
+    // Número de movimentos necessários para disparar um evento de trepidação
     shakethreshold: 5,
 
-    // delay between shake events (in ms)
+    // Intervalo entre as ações de movimento
     debounce: 1000,
 
-    // anonymous callback function
+    // Função de resposta
     callback: function() {}
 };
-
