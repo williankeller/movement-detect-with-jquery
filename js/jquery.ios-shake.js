@@ -45,7 +45,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
         // http://www.mobilexweb.com/samples/ball.html
         // Detectando se a aceleração é suportada
-        if (window.DeviceMotionEvent === undefined) {
+        if (window.DeviceMotionEvent !== undefined) {
 			
 			window.ondevicemotion = function(event) {
                 
