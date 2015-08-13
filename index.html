@@ -1,0 +1,63 @@
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="mobile-web-app-capable" content="yes">
+<title>SexRate</title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="js/jquery.ios-shake.js"></script>
+<script src="js/jquery.ui.shake.js"></script>
+<script>
+(function($){
+
+	var movimento = function(){
+
+		var x = $('#base').val();
+
+		if(x == 1){
+			
+			$("#base").val('2');
+			$('#resultado').html("<img src='img/thumb-1.jpg'/>");
+		}
+		else if(x == 2){
+			
+			$("#base").val('3');
+			$('#resultado').html("<img src='img/thumb-2.jpg'/>");
+		}
+		else {			
+			$("#base").val('1');
+			$('#resultado').html("<img src='img/thumb-3.jpg' />");
+		}
+	}
+
+	$.shake({
+		callback: function(){
+			
+			movimento();
+		}
+	});
+	
+})(jQuery);
+</script>
+<style>
+#area-total {
+	position:relative;
+	display:block;
+	overflow:hidden;
+	text-align:center;
+}
+#resultado img {
+	width:600px;
+	max-width:100%;
+}
+</style>
+</head>
+<body>
+<div id="area-total">
+    <div id="resultado"><img src='img/thumb-1.jpg' /></div>
+    <input type="hidden" id="base" val="1"/>
+</div>
+</body>
+</html>
