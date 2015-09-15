@@ -5,3 +5,5 @@
 Tente visualizar no seu dispositivo móvel:
 
 ![](http://butsource.com.br/site/recursos/img/acao-movimento-qr-code.png)
+
+Agora é só sacudir mara ver a ação!
