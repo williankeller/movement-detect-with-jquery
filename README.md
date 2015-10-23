@@ -1,4 +1,4 @@
-# Ação de Movimento
+# Ação de Movimento ![Versão](https://img.shields.io/badge/Versão-1.0.1-green.svg)
 
 #### Simples ação de movimento para dispositivos mobile. 
 
